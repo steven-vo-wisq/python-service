@@ -1,3 +1,5 @@
 [tool.poetry]
 name = "python-service"
 version = "0.0.1"
+description = ""
+authors = ["Steven Vo <tvo-c@wisq.com>"]
