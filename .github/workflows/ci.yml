@@ -71,9 +71,9 @@ jobs:
       - name: Copy OpenAPI files into service-c docs
         run: |
           set -e
-          mkdir -p service-c/docs/service-a
-          cp -v build/openapi.html api-docs/teams-service/index.html || true
-          cp -v build/openapi.json api-docs/teams-service/openapi.json || true
+          mkdir -p api-docs/teams-service
+          cp -v openapi.json api-docs/teams-service/openapi.json || true
+          cp -v apidoc/docs-${{ env.PROJECT_VERSION }}.html api-docs/teams-service/index.html || true
           ls -l api-docs/teams-service
 
       - name: Commit changes to Service-C (branch)
