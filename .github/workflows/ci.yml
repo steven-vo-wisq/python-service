@@ -57,6 +57,38 @@ jobs:
         with:
           branch: gh-pages
           folder: apidoc
-          target-folder: ${{env.PUB_DIR}}
+          target-folder: ${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}
           clean: false
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - name: Checkout Service-C (target docs repo)
+        uses: actions/checkout@v4
+        with:
+          repository: steven-vo-wisq/api-docs
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          path: api-docs
+
+      - name: Copy OpenAPI files into service-c docs
+        run: |
+          set -e
+          mkdir -p service-c/docs/service-a
+          cp -v build/openapi.html api-docs/teams-service/index.html || true
+          cp -v build/openapi.json api-docs/teams-service/openapi.json || true
+          ls -l api-docs/teams-service
+
+      - name: Commit changes to Service-C (branch)
+        working-directory: service-c
+        env:
+          GIT_AUTHOR_NAME: "github-actions[bot]"
+          GIT_AUTHOR_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
+        run: |
+          git config user.name "$GIT_AUTHOR_NAME"
+          git config user.email "$GIT_AUTHOR_EMAIL"
+          git checkout -b update/openapi-from-service-a || git checkout update/openapi-from-service-a
+          git add docs/service-a || true
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore(docs): update openapi from service-a"
+            git push https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/org/service-c HEAD:update/openapi-from-service-a --force
+          fi
