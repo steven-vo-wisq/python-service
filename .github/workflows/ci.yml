@@ -21,10 +21,11 @@ jobs:
           echo "PROJECT_NAME=$(cat ./pyproject.toml | grep -m 1 "name = " | head -1 | tr -d '"' | awk '{print $3}')" >> $GITHUB_ENV
           echo "PROJECT_VERSION=$(cat ./pyproject.toml | grep -m 1 "version = " | tr -d '"' | awk '{print $3}')" >> $GITHUB_ENV
 
-      - name: Install dependencies
+      - name: Install Poetry and dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install poetry
+          poetry install  
 
       - name: python doc
         run: |
