@@ -61,14 +61,14 @@ jobs:
           clean: false
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
-      - name: Checkout Service-C (target docs repo)
+      - name: Checkout api-docs
         uses: actions/checkout@v4
         with:
           repository: steven-vo-wisq/api-docs
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           path: api-docs
 
-      - name: Copy OpenAPI files into service-c docs
+      - name: Copy OpenAPI files into api-docs
         run: |
           set -e
           mkdir -p api-docs/teams-service
@@ -76,15 +76,15 @@ jobs:
           cp -v apidoc/docs-${{ env.PROJECT_VERSION }}.html api-docs/teams-service/index.html || true
           ls -l api-docs/teams-service
 
-      - name: Commit changes to Service-C (branch)
-        working-directory: service-c
+      - name: Commit changes to api-docs (branch)
+        working-directory: api-docs
         env:
           GIT_AUTHOR_NAME: "github-actions[bot]"
           GIT_AUTHOR_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
         run: |
           git config user.name "$GIT_AUTHOR_NAME"
           git config user.email "$GIT_AUTHOR_EMAIL"
-          git checkout -b update/openapi-from-service-a || git checkout update/openapi-from-service-a
+          git checkout main
           git add docs/service-a || true
           if git diff --staged --quiet; then
             echo "No changes to commit"
