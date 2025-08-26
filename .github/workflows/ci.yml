@@ -87,4 +87,4 @@ jobs:
           git checkout main
           git add .
           git commit -m "chore(docs): update openapi from service-a" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/org/service-c HEAD:main --force
+          git push https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/steven-vo-wisq/api-docs HEAD:main --force
