@@ -1,4 +1,3 @@
-# .github/workflows/ci.yml
 name: Python CI
 
 on:
@@ -27,7 +26,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # generate OpenAPI documentation
       - name: python doc
         run: |
           poetry run python3 -m generate_doc
@@ -39,7 +37,6 @@ jobs:
           redocly build-docs openapi.json -o apidoc/docs-${{ env.PROJECT_VERSION }}.html
           cp openapi.json apidoc/docs-${{ env.PROJECT_VERSION }}.json
 
-      # upload HTML doc as build artifact
       - name: Upload doc
         uses: actions/upload-artifact@v4
         with:
