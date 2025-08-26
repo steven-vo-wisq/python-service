@@ -37,7 +37,7 @@ jobs:
       # generate OpenAPI documentation
       - name: python doc
         run: |
-          python -m generate_doc
+          poetry run python3 -m generate_doc
 
       - name: generate doc
         run: |
