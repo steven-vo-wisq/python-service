@@ -59,3 +59,4 @@ jobs:
           folder: apidoc
           target-folder: ${{env.PUB_DIR}}
           clean: false
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
