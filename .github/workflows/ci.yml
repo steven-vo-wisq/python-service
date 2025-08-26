@@ -74,6 +74,11 @@ jobs:
           mkdir -p api-docs/teams-service/main
           cp -v openapi.json api-docs/teams-service/main/openapi.json || true
           cp -v apidoc/docs-${{ env.PROJECT_VERSION }}.html api-docs/teams-service/main/index.html || true
+          
+          # Force copy to main.json and main.html (always latest version)
+          cp -f openapi.json api-docs/teams-service/main/main.json
+          cp -f apidoc/docs-${{ env.PROJECT_VERSION }}.html api-docs/teams-service/main/main.html
+          
           ls -l api-docs/teams-service/main
 
       - name: Commit changes to api-docs (branch)
