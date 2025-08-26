@@ -71,10 +71,10 @@ jobs:
       - name: Copy OpenAPI files into api-docs
         run: |
           set -e
-          mkdir -p api-docs/teams-service
-          cp -v openapi.json api-docs/teams-service/openapi.json || true
-          cp -v apidoc/docs-${{ env.PROJECT_VERSION }}.html api-docs/teams-service/index.html || true
-          ls -l api-docs/teams-service
+          mkdir -p teams-service/main
+          cp -v openapi.json teams-service/main/openapi.json || true
+          cp -v apidoc/docs-${{ env.PROJECT_VERSION }}.html teams-service/main/index.html || true
+          ls -l teams-service/main
 
       - name: Commit changes to api-docs (branch)
         working-directory: api-docs
@@ -85,7 +85,7 @@ jobs:
           git config user.name "$GIT_AUTHOR_NAME"
           git config user.email "$GIT_AUTHOR_EMAIL"
           git checkout main
-          git add docs/service-a || true
+          git add teams-service/main || true
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
