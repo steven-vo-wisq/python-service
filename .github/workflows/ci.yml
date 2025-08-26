@@ -27,10 +27,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.5.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
       # generate OpenAPI documentation
       - name: python doc
         run: |
-          poetry run python3 -m generate_doc
+          python -m generate_doc
 
       - name: generate doc
         run: |
