@@ -81,8 +81,6 @@ jobs:
           # Force copy to main.json and main.html (always latest version)
           cp -f openapi.json ${{ vars.SERVICE_DOCS_PATH }}/main.json
           cp -f apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ vars.SERVICE_DOCS_PATH }}/main.html
-          
-          ls -l ${{ vars.REPO_API_DOCS }}
 
       - name: Commit changes to api-docs (branch)
         working-directory: api-docs
