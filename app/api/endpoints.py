@@ -22,7 +22,7 @@ def read_item(item_id: int):
     return {"id": item_id, **items_db[item_id]}
 
 
-@router.get("/items/{item_id}/orders", response_model=Item, tags=["items"])
+@router.delete("/items/{item_id}/orders/{id}", response_model=Item, tags=["items"])
 def read_item(item_id: int):
     if item_id not in items_db:
         raise HTTPException(status_code=404, detail="Item not found")
