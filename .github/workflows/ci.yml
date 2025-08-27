@@ -64,7 +64,7 @@ jobs:
       - name: Checkout api-docs
         uses: actions/checkout@v4
         with:
-          repository: ${{ env.REPO_API_DOCS }}
+          repository: ${{ vars.REPO_API_DOCS }}
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           path: api-docs
 
@@ -74,15 +74,15 @@ jobs:
       - name: Copy OpenAPI files into api-docs
         run: |
           set -e
-          mkdir -p ${{ env.SERVICE_DOCS_PATH }}
-          cp -v openapi.json ${{ env.SERVICE_DOCS_PATH }}/${{ env.PROJECT_VERSION }}.json || true
-          cp -v apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/${{ env.PROJECT_VERSION }}.html || true
+          mkdir -p ${{ vars.SERVICE_DOCS_PATH }}
+          cp -v openapi.json ${{ vars.SERVICE_DOCS_PATH }}/${{ env.PROJECT_VERSION }}.json || true
+          cp -v apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ vars.SERVICE_DOCS_PATH }}/${{ env.PROJECT_VERSION }}.html || true
           
           # Force copy to main.json and main.html (always latest version)
           cp -f openapi.json api-docs/teams-service/main/main.json
-          cp -f apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/main.html
+          cp -f apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ vars.SERVICE_DOCS_PATH }}/main.html
           
-          ls -l ${{ env.REPO_API_DOCS }}
+          ls -l ${{ vars.REPO_API_DOCS }}
 
       - name: Commit changes to api-docs (branch)
         working-directory: api-docs
@@ -94,5 +94,5 @@ jobs:
           git config user.email "$GIT_AUTHOR_EMAIL"
           git checkout main
           git add .
-          git commit -m ""
-          git push https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ env.REPO_API_DOCS }} HEAD:main --force
+          git commit -m "publish API docs for ${{ env.PROJECT_NAME }} version ${{ env.PROJECT_VERSION }}" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ vars.REPO_API_DOCS }} HEAD:main --force
