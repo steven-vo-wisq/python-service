@@ -74,7 +74,7 @@ jobs:
       - name: Copy OpenAPI files into api-docs
         run: |
           set -e
-          mkdir -p api-docs/teams-service/main
+          mkdir -p ${{ env.SERVICE_DOCS_PATH }}
           cp -v openapi.json ${{ env.SERVICE_DOCS_PATH }}/${{ env.PROJECT_VERSION }}.json || true
           cp -v apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/${{ env.PROJECT_VERSION }}.html || true
           
