@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "python-service"
-version = "0.0.14"
+version = "0.0.15"
 description = ""
 authors = ["Steven Vo <tvo-c@wisq.com>"]
 package-mode = false

@@ -79,7 +79,7 @@ jobs:
           cp -v apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ vars.SERVICE_DOCS_PATH }}/${{ env.PROJECT_VERSION }}.html || true
           
           # Force copy to main.json and main.html (always latest version)
-          cp -f openapi.json api-docs/teams-service/main/main.json
+          cp -f openapi.json ${{ vars.SERVICE_DOCS_PATH }}/main.json
           cp -f apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ vars.SERVICE_DOCS_PATH }}/main.html
           
           ls -l ${{ vars.REPO_API_DOCS }}
