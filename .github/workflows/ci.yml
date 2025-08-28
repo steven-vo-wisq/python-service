@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REPO_API_DOCS: steven-vo-wisq/api-docs
-      SERVICE_DOCS_PATH: api-docs/python-service
+      SERVICE_DOCS_PATH: api-docs/teams-service
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
