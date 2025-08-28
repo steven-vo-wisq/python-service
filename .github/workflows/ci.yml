@@ -19,81 +19,84 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: get project info
-        run: |
-          echo "PROJECT_NAME=$(cat ./pyproject.toml | grep -m 1 "name = " | head -1 | tr -d '"' | awk '{print $3}')" >> $GITHUB_ENV
-          echo "PROJECT_VERSION=$(cat ./pyproject.toml | grep -m 1 "version = " | tr -d '"' | awk '{print $3}')" >> $GITHUB_ENV
+      - name: Get branch name
+        run: echo "Branch name is ${{ github.ref_name }}"
 
-      - name: Install Poetry and dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-          poetry install --no-root
-
-      - name: python doc
-        run: |
-          poetry run python3 -m generate_doc
-
-      - name: generate doc
-        run: |
-          ls -l
-          npm install -g @redocly/cli@latest
-          redocly build-docs openapi.json -o apidoc/docs-${{ env.PROJECT_VERSION }}.html
-          cp openapi.json apidoc/docs-${{ env.PROJECT_VERSION }}.json
-
-      - name: Upload doc
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.html
-          path: apidoc
-
-      - name: tag
-        continue-on-error: false
-        uses: tvdias/github-tagger@v0.0.1
-        with:
-          repo-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          tag: ${{ env.PROJECT_VERSION }}
-        if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/hotfix') ) }}
-
-      - name: publish docs
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: apidoc
-          target-folder: ${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}
-          clean: false
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-
-      - name: Checkout api-docs
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ env.REPO_API_DOCS }}
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          path: api-docs
-
-      # SERVICE_DOCS_PATH = "apis-doc/teams-service/main"
-      # REPO_API_DOCS = "wisqinc/apis-docs"
-
-      - name: Copy OpenAPI files into api-docs
-        run: |
-          set -e
-          mkdir -p ${{ env.SERVICE_DOCS_PATH }}
-          cp -v openapi.json ${{ env.SERVICE_DOCS_PATH }}/${{ env.PROJECT_VERSION }}.json || true
-          cp -v apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/${{ env.PROJECT_VERSION }}.html || true
-          
-          # Force copy to main.json and main.html (always latest version)
-          cp -f openapi.json ${{ env.SERVICE_DOCS_PATH }}/main.json
-          cp -f apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/main.html
-
-      - name: Commit changes to api-docs (branch)
-        working-directory: api-docs
-        env:
-          GIT_AUTHOR_NAME: "github-actions[bot]"
-          GIT_AUTHOR_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
-        run: |
-          git config user.name "$GIT_AUTHOR_NAME"
-          git config user.email "$GIT_AUTHOR_EMAIL"
-          git checkout main
-          git add .
-          git commit -m "publish API docs for ${{ env.PROJECT_NAME }} version ${{ env.PROJECT_VERSION }}" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ env.REPO_API_DOCS }} HEAD:main --force
+#      - name: get project info
+#        run: |
+#          echo "PROJECT_NAME=$(cat ./pyproject.toml | grep -m 1 "name = " | head -1 | tr -d '"' | awk '{print $3}')" >> $GITHUB_ENV
+#          echo "PROJECT_VERSION=$(cat ./pyproject.toml | grep -m 1 "version = " | tr -d '"' | awk '{print $3}')" >> $GITHUB_ENV
+#
+#      - name: Install Poetry and dependencies
+#        run: |
+#          python -m pip install --upgrade pip
+#          pip install poetry
+#          poetry install --no-root
+#
+#      - name: python doc
+#        run: |
+#          poetry run python3 -m generate_doc
+#
+#      - name: generate doc
+#        run: |
+#          ls -l
+#          npm install -g @redocly/cli@latest
+#          redocly build-docs openapi.json -o apidoc/docs-${{ env.PROJECT_VERSION }}.html
+#          cp openapi.json apidoc/docs-${{ env.PROJECT_VERSION }}.json
+#
+#      - name: Upload doc
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: ${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.html
+#          path: apidoc
+#
+#      - name: tag
+#        continue-on-error: false
+#        uses: tvdias/github-tagger@v0.0.1
+#        with:
+#          repo-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+#          tag: ${{ env.PROJECT_VERSION }}
+#        if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/hotfix') ) }}
+#
+#      - name: publish docs
+#        uses: JamesIves/github-pages-deploy-action@v4
+#        with:
+#          branch: gh-pages
+#          folder: apidoc
+#          target-folder: ${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}
+#          clean: false
+#          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+#
+#      - name: Checkout api-docs
+#        uses: actions/checkout@v4
+#        with:
+#          repository: ${{ env.REPO_API_DOCS }}
+#          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+#          path: api-docs
+#
+#      # SERVICE_DOCS_PATH = "apis-doc/teams-service/main"
+#      # REPO_API_DOCS = "wisqinc/apis-docs"
+#
+#      - name: Copy OpenAPI files into api-docs
+#        run: |
+#          set -e
+#          mkdir -p ${{ env.SERVICE_DOCS_PATH }}
+#          cp -v openapi.json ${{ env.SERVICE_DOCS_PATH }}/${{ env.PROJECT_VERSION }}.json || true
+#          cp -v apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/${{ env.PROJECT_VERSION }}.html || true
+#
+#          # Force copy to main.json and main.html (always latest version)
+#          cp -f openapi.json ${{ env.SERVICE_DOCS_PATH }}/main.json
+#          cp -f apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/main.html
+#
+#      - name: Commit changes to api-docs (branch)
+#        working-directory: api-docs
+#        env:
+#          GIT_AUTHOR_NAME: "github-actions[bot]"
+#          GIT_AUTHOR_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
+#        run: |
+#          git config user.name "$GIT_AUTHOR_NAME"
+#          git config user.email "$GIT_AUTHOR_EMAIL"
+#          git checkout main
+#          git add .
+#          git commit -m "publish API docs for ${{ env.PROJECT_NAME }} version ${{ env.PROJECT_VERSION }}" || echo "No changes to commit"
+#          git push https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ env.REPO_API_DOCS }} HEAD:main --force
