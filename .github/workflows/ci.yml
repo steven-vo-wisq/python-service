@@ -76,19 +76,20 @@ jobs:
 
 #      # SERVICE_DOCS_PATH = "apis-doc/teams-service/main"
 #      # REPO_API_DOCS = "wisqinc/apis-docs"
-#
+
       - name: Copy OpenAPI files into api-docs
         run: |
           set -e
-          mkdir -p ${{ env.SERVICE_DOCS_PATH }}
-          mkdir -p ${{ github.ref_name }}
-          cp -v openapi.json ${{ env.SERVICE_DOCS_PATH }}/${{ env.PROJECT_VERSION }}.json || true
-          cp -v apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/${{ env.PROJECT_VERSION }}.html || true
+          # Create branch folder and main folder
+          mkdir -p ${{ env.SERVICE_DOCS_PATH }}/${{ github.ref_name }}
+          mkdir -p ${{ env.SERVICE_DOCS_PATH }}/main
+          
+          cp -v openapi.json ${{ env.SERVICE_DOCS_PATH }}/${{ github.ref_name }}/${{ env.PROJECT_VERSION }}.json || true
+          cp -v apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/${{ github.ref_name }}/${{ env.PROJECT_VERSION }}.html || true
 
           # Force copy to main.json and main.html (always latest version)
-          cd ../main
-          cp -f openapi.json ${{ env.SERVICE_DOCS_PATH }}/main.json
-          cp -f apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/main.html
+          cp -f openapi.json ${{ env.SERVICE_DOCS_PATH }}/main/main.json
+          cp -f apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/main/main.html
 
       - name: Commit changes to api-docs (branch)
         working-directory: api-docs
