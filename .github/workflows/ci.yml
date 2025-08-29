@@ -105,5 +105,7 @@ jobs:
           repository-name: ${{ env.REPO_API_DOCS }}
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           branch: main
-          folder: teams-service
+          folder: api-docs/teams-service
           clean: false
+          force: true
+          attempt-limit: 3
