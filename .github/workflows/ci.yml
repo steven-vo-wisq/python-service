@@ -105,5 +105,5 @@ jobs:
           repository-name: ${{ env.REPO_API_DOCS }}
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           branch: main
-          folder: ${{ env.SERVICE_DOCS_PATH }}
+          folder: teams-service
           clean: false
