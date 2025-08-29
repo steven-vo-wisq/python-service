@@ -99,14 +99,11 @@ jobs:
           cp -f openapi.json ${{ env.SERVICE_DOCS_PATH }}/main/main.json
           cp -f apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/main/main.html
 
-      - name: Commit changes to api-docs (branch)
-        working-directory: api-docs
-        env:
-          GIT_AUTHOR_NAME: "github-actions[bot]"
-          GIT_AUTHOR_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
-        run: |
-          git config user.name "$GIT_AUTHOR_NAME"
-          git config user.email "$GIT_AUTHOR_EMAIL"
-          git add .
-          git commit -m "publish API docs for ${{ env.PROJECT_NAME }} version ${{ env.PROJECT_VERSION }}" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ env.REPO_API_DOCS }} HEAD:main --force
+      - name: Deploy API docs
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          repository-name: ${{ env.REPO_API_DOCS }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          branch: main
+          folder: ${{ env.SERVICE_DOCS_PATH }}
+          clean: false
