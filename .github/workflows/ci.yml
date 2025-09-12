@@ -85,27 +85,39 @@ jobs:
             echo "BRANCH_NAME=${{ github.ref_name }}" >> $GITHUB_ENV
           fi
 
-      - name: Copy OpenAPI files into api-docs
-        run: |
-          set -e
-          # Create branch folder and main folder
-          mkdir -p ${{ env.SERVICE_DOCS_PATH }}/${{ env.BRANCH_NAME }}
-          mkdir -p ${{ env.SERVICE_DOCS_PATH }}/main
-          
-          cp -v openapi.json ${{ env.SERVICE_DOCS_PATH }}/${{ env.BRANCH_NAME }}/${{ env.PROJECT_VERSION }}.json || true
-          cp -v apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/${{ env.BRANCH_NAME }}/${{ env.PROJECT_VERSION }}.html || true
+#      - name: Copy OpenAPI files into api-docs
+#        run: |
+#          set -e
+#          # Create branch folder and main folder
+#          mkdir -p ${{ env.SERVICE_DOCS_PATH }}/${{ env.BRANCH_NAME }}
+#          mkdir -p ${{ env.SERVICE_DOCS_PATH }}/main
+#
+#          cp -v openapi.json ${{ env.SERVICE_DOCS_PATH }}/${{ env.BRANCH_NAME }}/${{ env.PROJECT_VERSION }}.json || true
+#          cp -v apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/${{ env.BRANCH_NAME }}/${{ env.PROJECT_VERSION }}.html || true
+#
+#          # Force copy to main.json and main.html (always latest version)
+#          cp -f openapi.json ${{ env.SERVICE_DOCS_PATH }}/main/main.json
+#          cp -f apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/main/main.html
+#
+#      - name: Deploy API docs
+#        uses: JamesIves/github-pages-deploy-action@v4
+#        with:
+#          repository-name: ${{ env.REPO_API_DOCS }}
+#          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+#          branch: main
+#          folder: teams-service
+#          clean: false
+#          force: true
+#          attempt-limit: 3
 
-          # Force copy to main.json and main.html (always latest version)
-          cp -f openapi.json ${{ env.SERVICE_DOCS_PATH }}/main/main.json
-          cp -f apidoc/docs-${{ env.PROJECT_VERSION }}.html ${{ env.SERVICE_DOCS_PATH }}/main/main.html
-
-      - name: Deploy API docs
+      - name: Deploy API docs to api-docs repo (using JamesIves action)
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          repository-name: ${{ env.REPO_API_DOCS }}
+          repository-name: ${{ env.REPO_API_DOCS }}       # target repo
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          branch: main
-          folder: api-docs/teams-service
+          branch: main                                   # target branch in the api-docs repo
+          folder: publish                                # local folder to push
+          target-folder: ${{ env.SERVICE_DOCS_PATH }}    # path inside target repo (e.g. api-docs/teams-service)
           clean: false
           force: true
           attempt-limit: 3
