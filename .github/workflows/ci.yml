@@ -89,7 +89,8 @@ jobs:
             echo "BRANCH_NAME=${{ github.ref_name }}" >> $GITHUB_ENV
           fi
           
-          echo ${{ env.BRANCH_NAME }}
+          mkdir -p ${{ env.SERVICE_DOCS_PATH }}/${{ env.BRANCH_NAME }}
+          mkdir -p ${{ env.SERVICE_DOCS_PATH }}/main
 
 #      - name: Copy OpenAPI files into api-docs
 #        run: |
