@@ -133,4 +133,5 @@ jobs:
           target-folder: ${{ env.SERVICE_DOCS_PATH }}/main
           branch: main
           clean: false
+          force: true
           folder: apidoc-main
