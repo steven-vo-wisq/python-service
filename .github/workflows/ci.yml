@@ -44,8 +44,9 @@ jobs:
           redocly build-docs openapi.json -o apidoc/docs-${{ env.PROJECT_VERSION }}.html
           cp openapi.json apidoc/docs-${{ env.PROJECT_VERSION }}.json
           
-          echo "OpenAPI doc generated:"
-          ls -l apidoc
+          mkdir -p apidoc-main
+          cp apidoc/docs-${{ env.PROJECT_VERSION }}.html apidoc-main/main.html
+          cp openapi.json apidoc-main/main.json
 
       - name: Upload doc
         uses: actions/upload-artifact@v4
@@ -119,6 +120,7 @@ jobs:
           repository-name: ${{ env.REPO_API_DOCS }}       # target repo
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           target-folder: ${{ env.SERVICE_DOCS_PATH }}/${{ env.BRANCH_NAME }}    # path inside target repo (e.g. api-docs/teams-service)
+          branch: main
           clean: false
           folder: apidoc
 
@@ -128,5 +130,6 @@ jobs:
           repository-name: ${{ env.REPO_API_DOCS }}       # target repo
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           target-folder: ${{ env.SERVICE_DOCS_PATH }}/main    # path inside target repo (e.g. api-docs/teams-service)
+          branch: main
           clean: false
-          folder: apidoc
+          folder: apidoc-main
