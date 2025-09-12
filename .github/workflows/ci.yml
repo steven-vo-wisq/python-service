@@ -88,9 +88,6 @@ jobs:
           else
             echo "BRANCH_NAME=${{ github.ref_name }}" >> $GITHUB_ENV
           fi
-          
-          mkdir -p ${{ env.SERVICE_DOCS_PATH }}/${{ env.BRANCH_NAME }}
-          mkdir -p ${{ env.SERVICE_DOCS_PATH }}/main
 
 #      - name: Copy OpenAPI files into api-docs
 #        run: |
@@ -117,22 +114,23 @@ jobs:
 #          force: true
 #          attempt-limit: 3
 
-      - name: Deploy API docs to api-docs repo (using JamesIves action)
+      - name: Deploy API docs to api-docs repo for Pull Request (using JamesIves action)
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          repository-name: ${{ env.REPO_API_DOCS }}       # target repo
+          repository-name: ${{ env.REPO_API_DOCS }}
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          target-folder: ${{ env.SERVICE_DOCS_PATH }}/${{ env.BRANCH_NAME }}    # path inside target repo (e.g. api-docs/teams-service)
+          target-folder: ${{ env.SERVICE_DOCS_PATH }}/${{ env.BRANCH_NAME }}
           branch: main
           clean: false
           folder: apidoc
+        if: ${{ github.event_name == 'pull_request' }}
 
-      - name: Deploy API docs to api-docs repo (using JamesIves action)
+      - name: Deploy API docs to api-docs repo for main branch (using JamesIves action)
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          repository-name: ${{ env.REPO_API_DOCS }}       # target repo
+          repository-name: ${{ env.REPO_API_DOCS }}
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          target-folder: ${{ env.SERVICE_DOCS_PATH }}/main    # path inside target repo (e.g. api-docs/teams-service)
+          target-folder: ${{ env.SERVICE_DOCS_PATH }}/main
           branch: main
           clean: false
           folder: apidoc-main
