@@ -116,8 +116,6 @@ jobs:
           repository-name: ${{ env.REPO_API_DOCS }}       # target repo
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           branch: main                                   # target branch in the api-docs repo
-          folder: teams-service                                # local folder to push
           target-folder: ${{ env.SERVICE_DOCS_PATH }}    # path inside target repo (e.g. api-docs/teams-service)
           clean: false
-          force: true
-          attempt-limit: 3
+          folder: apidoc
