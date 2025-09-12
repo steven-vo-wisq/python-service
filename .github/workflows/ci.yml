@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REPO_API_DOCS: steven-vo-wisq/api-docs
-      SERVICE_DOCS_PATH: api-docs/teams-service
+      SERVICE_DOCS_PATH: teams-service
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
@@ -43,6 +43,9 @@ jobs:
           npm install -g @redocly/cli@latest
           redocly build-docs openapi.json -o apidoc/docs-${{ env.PROJECT_VERSION }}.html
           cp openapi.json apidoc/docs-${{ env.PROJECT_VERSION }}.json
+          
+          echo "OpenAPI doc generated:"
+          ls -l apidoc
 
       - name: Upload doc
         uses: actions/upload-artifact@v4
@@ -115,7 +118,15 @@ jobs:
         with:
           repository-name: ${{ env.REPO_API_DOCS }}       # target repo
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          branch: main                                   # target branch in the api-docs repo
-          target-folder: ${{ env.SERVICE_DOCS_PATH }}    # path inside target repo (e.g. api-docs/teams-service)
+          target-folder: ${{ env.SERVICE_DOCS_PATH }}/${{ env.BRANCH_NAME }}    # path inside target repo (e.g. api-docs/teams-service)
+          clean: false
+          folder: apidoc
+
+      - name: Deploy API docs to api-docs repo (using JamesIves action)
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          repository-name: ${{ env.REPO_API_DOCS }}       # target repo
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          target-folder: ${{ env.SERVICE_DOCS_PATH }}/main    # path inside target repo (e.g. api-docs/teams-service)
           clean: false
           folder: apidoc
